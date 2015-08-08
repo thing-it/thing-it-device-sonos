@@ -1,6 +1,6 @@
 {
   "name": "thing-it-device-sonos",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "[thing-it-node] Device Plugin for Sonos players.",
   "authors": "Klaus Berberich",
   "keywords": [
@@ -16,7 +16,7 @@
     "url": "https://github.com/klausberberich/thing-it-device-sonos"
   },
   "dependencies": {
-    "q": "^1.4.1",
-    "sonos": "^0.2.0"
+    "q": "~1.4.1",
+    "sonos": "~0.2.0"
   }
 }
