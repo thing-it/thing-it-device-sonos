@@ -58,10 +58,10 @@ module.exports = {
     },
 
     create: function (device) {
-        return new SonosDevice();
+        return new Sonos();
     },
     discovery: function (options) {
-        var discovery = new SonosDeviceDiscovery();
+        var discovery = new SonosDiscovery();
 
         discovery.options = options;
 
@@ -70,19 +70,19 @@ module.exports = {
 };
 
 var q = require('q');
-var Sonos;
+var SonosLibrary;
 //var noble = require('noble');
 
-function SonosDeviceDiscovery() {
+function SonosDiscovery() {
     /**
      *
      * @param options
      */
-    SonosDeviceDiscovery.prototype.start = function () {
+    SonosDiscovery.prototype.start = function () {
         if (this.node.isSimulated()) {
         } else {
-            if (!Sonos) {
-                Sonos = require("sonos");
+            if (!SonosLibrary) {
+                SonosLibrary = require("sonos");
             }
 
             this.logInfo("Sonos discovery prototype start called. Doing nothing.");//@TODO remove
@@ -93,7 +93,7 @@ function SonosDeviceDiscovery() {
      *
      * @param options
      */
-    SonosDeviceDiscovery.prototype.stop = function () {
+    SonosDiscovery.prototype.stop = function () {
         this.logInfo("Sonos discovery prototype stop called. Doing nothing.");//@TODO remove
     };
 }
@@ -101,7 +101,7 @@ function SonosDeviceDiscovery() {
 /**
  *
  */
-function SonosDevice() {
+function Sonos() {
     /**
      *
      */
@@ -127,8 +127,8 @@ function SonosDevice() {
                 this.logInfo("Sonos start called for reals...");//@TODO remove
                 this.started = true;
 
-                if (!Sonos) {
-                    Sonos = require("sonos");
+                if (!SonosLibrary) {
+                    SonosLibrary = require("sonos");
 
                     this.scan();
                 }
@@ -145,10 +145,10 @@ function SonosDevice() {
     /**
      *
      */
-    SonosDevice.prototype.scan = function(){
+    Sonos.prototype.scan = function(){
         this.logInfo("\tScanning for Sonos Host " + this.configuration.host + " started.");
 
-        Sonos.search.(function(sonos) {
+        SonosLibrary.search.(function(sonos) {
             this.logInfo('Found Sonos \'%s\'', sonos.host);
 
             if (sonos.host === this.configuration.host) {
@@ -164,14 +164,14 @@ function SonosDevice() {
     /**
      *
      */
-    SonosDevice.prototype.connect = function(){
+    Sonos.prototype.connect = function(){
         this.logInfo("Sonos conneccccccccttttiiiinnnng!!!!");//@TODO remove
     }
 
     /**
      *
      */
-    SonosDevice.prototype.setState = function (state) {
+    Sonos.prototype.setState = function (state) {
         this.state = state;
 
         this.publishStateChange();
@@ -180,7 +180,7 @@ function SonosDevice() {
     /**
      *
      */
-    SonosDevice.prototype.getState = function () {
+    Sonos.prototype.getState = function () {
         return this.state;
     };
 
@@ -188,7 +188,7 @@ function SonosDevice() {
      *
      *
      */
-    SonosDevice.prototype.play = function () {
+    Sonos.prototype.play = function () {
         this.logInfo("Sonos play called");//@TODO remove
 
         if (!this.isSimulated()) {
@@ -201,7 +201,7 @@ function SonosDevice() {
      *
      *
      */
-    SonosDevice.prototype.pause = function () {
+    Sonos.prototype.pause = function () {
         this.logInfo("Sonos pause called");//@TODO remove
 
         if (!this.isSimulated()) {
@@ -214,7 +214,7 @@ function SonosDevice() {
      *
      *
      */
-    SonosDevice.prototype.mute = function () {
+    Sonos.prototype.mute = function () {
         this.logInfo("Sonos mute called");//@TODO remove
 
         if (!this.isSimulated()) {
