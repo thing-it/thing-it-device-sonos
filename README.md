@@ -16,7 +16,7 @@ by means of [thing-it-node](https://github.com/marcgille/thing-it-node) and [thi
 
 ## Installation
 
-After you have
+Prerequesites:
 
 * [set up](http://www.thing-it.com/thing-it/index.html?document=gettingStarted#/documentationPanel) your [thing-it] Node Box and
 * configured or copied a [thing-it] Mesh with a Sonos,
