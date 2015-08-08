@@ -58,10 +58,10 @@ module.exports = {
     },
 
     create: function (device) {
-        return new Sonos();
+        return new SonosDevice();
     },
     discovery: function (options) {
-        var discovery = new SonosDiscovery();
+        var discovery = new SonosDeviceDiscovery();
 
         discovery.options = options;
 
@@ -73,19 +73,19 @@ var q = require('q');
 var Sonos;
 //var noble = require('noble');
 
-function SonosDiscovery() {
+function SonosDeviceDiscovery() {
     /**
      *
      * @param options
      */
-    SonosDiscovery.prototype.start = function () {
+    SonosDeviceDiscovery.prototype.start = function () {
         if (this.node.isSimulated()) {
         } else {
             if (!Sonos) {
                 Sonos = require("sonos");
             }
 
-            console.log("Prototype start called. Doing nothing.");//@TODO remove
+            this.logInfo("Sonos discovery prototype start called. Doing nothing.");//@TODO remove
         }
     };
 
@@ -93,8 +93,8 @@ function SonosDiscovery() {
      *
      * @param options
      */
-    SonosDiscovery.prototype.stop = function () {
-        console.log("Prototype stop called. Doing nothing.");//@TODO remove
+    SonosDeviceDiscovery.prototype.stop = function () {
+        this.logInfo("Sonos discovery prototype stop called. Doing nothing.");//@TODO remove
     };
 }
 
@@ -114,17 +114,17 @@ function SonosDevice() {
             muted: false
         };
 
-        console.log("Sonos state: %s.", this.state);//@TODO remove
+        this.logInfo("Sonos state: %s.", this.state);//@TODO remove
 
         if (this.sonos) {
-            console.log("Sonos already exists in prototype start - really unexpected!");//@TODO remove
+            this.logInfo("Sonos already exists in prototype start - really unexpected!");//@TODO remove
             this.connect();
 
             deferred.resolve();
         }
         else {
             if (!this.isSimulated()) {
-                console.log("Sonos start called for reals...");//@TODO remove
+                this.logInfo("Sonos start called for reals...");//@TODO remove
                 this.started = true;
 
                 if (!Sonos) {
@@ -135,7 +135,7 @@ function SonosDevice() {
 
                 deferred.resolve();
             } else {
-                console.log("Sonos simulation mode not implemented.")
+                this.logInfo("Sonos simulation mode not implemented.")
             }
         }
 
@@ -146,13 +146,13 @@ function SonosDevice() {
      *
      */
     SonosDevice.prototype.scan = function(){
-        console.log("\tScanning for Sonos Host " + this.configuration.host + " started.");
+        this.logInfo("\tScanning for Sonos Host " + this.configuration.host + " started.");
 
         Sonos.search.(function(sonos) {
-            console.log('Found Sonos \'%s\'', sonos.host);
+            this.logInfo('Found Sonos \'%s\'', sonos.host);
 
             if (sonos.host === this.configuration.host) {
-                console.log("\nMatching Sonos Host found.");
+                this.logInfo("\nMatching Sonos Host found.");
 
                 this.sonos = sonos;
                 this.connect();
@@ -165,7 +165,7 @@ function SonosDevice() {
      *
      */
     SonosDevice.prototype.connect = function(){
-        console.log("Sonos conneccccccccttttiiiinnnng!!!!");//@TODO remove
+        this.logInfo("Sonos conneccccccccttttiiiinnnng!!!!");//@TODO remove
     }
 
     /**
@@ -189,7 +189,7 @@ function SonosDevice() {
      *
      */
     SonosDevice.prototype.play = function () {
-        console.log("Sonos play called");//@TODO remove
+        this.logInfo("Sonos play called");//@TODO remove
 
         if (!this.isSimulated()) {
         }
@@ -202,7 +202,7 @@ function SonosDevice() {
      *
      */
     SonosDevice.prototype.pause = function () {
-        console.log("Sonos pause called");//@TODO remove
+        this.logInfo("Sonos pause called");//@TODO remove
 
         if (!this.isSimulated()) {
         }
@@ -215,7 +215,7 @@ function SonosDevice() {
      *
      */
     SonosDevice.prototype.mute = function () {
-        console.log("Sonos mute called");//@TODO remove
+        this.logInfo("Sonos mute called");//@TODO remove
 
         if (!this.isSimulated()) {
         }
