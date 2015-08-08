@@ -3,7 +3,7 @@
 [![NPM](https://nodei.co/npm/thing-it-device-sonos.png)](https://nodei.co/npm/thing-it-device-sonos/)
 [![NPM](https://nodei.co/npm-dl/thing-it-device-sonos.png)](https://nodei.co/npm/thing-it-device-sonos/)
 
-[thing-it-node] Device Plugin for [Sonos players](www.sonos.com).
+[thing-it-node](https://github.com/marcgille/thing-it-node) Device Plugin for [Sonos players](www.sonos.com).
 
 This allows you to
 

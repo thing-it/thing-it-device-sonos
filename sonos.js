@@ -148,7 +148,7 @@ function Sonos() {
     Sonos.prototype.scan = function(){
         this.logInfo("\tScanning for Sonos Host " + this.configuration.host + " started.");
 
-        SonosLibrary.search.(function(sonos) {
+        SonosLibrary.search(function(sonos) {
             this.logInfo('Found Sonos \'%s\'', sonos.host);
 
             if (sonos.host === this.configuration.host) {
