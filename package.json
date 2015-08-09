@@ -1,8 +1,8 @@
 {
   "name": "thing-it-device-sonos",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "[thing-it-node] Device Plugin for Sonos players.",
-  "authors": "Klaus Berberich",
+  "authors": "Klaus Berberich, Marc Gille",
   "keywords": [
     "IoT",
     "thing-it",
