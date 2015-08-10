@@ -33,4 +33,4 @@ Installation:
 
 The UI display's the connected Sonos' state and allows to control it.
 
-<img src="./documentation/images/sonos-mobile-screenshot.png">
+<img src="./Documentation/images/sonos-mobile-screenshot.png">
