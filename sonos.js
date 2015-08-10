@@ -12,6 +12,12 @@ module.exports = {
                 id: "string"
             }
         }, {
+            id: "currentState",
+            label: "Current State",
+            type: {
+                id: "integer"
+            }
+        }, {
             id: "volume",
             label: "Volume",
             type: {
@@ -33,8 +39,17 @@ module.exports = {
             id: "pause",
             label: "Pause"
         }, {
+            id: "stop",
+            label: "Stop"
+        }, {
             id: "mute",
             label: "Mute"
+        }, {
+            id: "next",
+            label: "Next"
+        }, {
+            id: "previous",
+            label: "Previous"
         }],
         configuration: [{
             id: "simulated",
@@ -158,7 +173,6 @@ function Sonos() {
             this.logInfo("Found Sonos " + sonos.host);
 
             this.sonos = sonos;
-            deferred.resolve();
 
             this.sonos.deviceDescription(function (err, output) {
 
@@ -169,7 +183,6 @@ function Sonos() {
                         this.logInfo("Matching Sonos Host found: " + sonos.host);
 
                         this.sonos = sonos;
-                        q.resolve();
                         this.connect();
                     }
                     else {
@@ -180,30 +193,19 @@ function Sonos() {
                 else {
                     if (output.roomName === this.configuration.name) {
                         this.logInfo("Found matching host with name " + output.roomName + " at IP " + sonos.host);
-                        this.sonos = sonos;
-                        this.name = this.configuration.name;
+                        this.description = output;
+                        this.connect();
+
                     }
                     else {
                         this.logDebug("Ignoring host " + sonos.host + " with room name " + output.roomName);
+                        this.sonos=null;
                     }
 
 
                 }
 
             }.bind(this));
-
-
-            /*
-             if (sonos.host === this.configuration.host) {
-             this.logInfo("\nMatching Sonos Host found.");
-
-             this.sonos = sonos;
-             this.connect();
-             }
-             else {
-             this.logInfo("Ignoring host " + sonos.host);
-             }
-             */
 
             deferred.resolve();
             return deferred.promise;
@@ -214,15 +216,11 @@ function Sonos() {
      *
      */
     Sonos.prototype.connect = function () {
-        this.logInfo("Sonos conneccccccccttttiiiinnnng!!!!");//@TODO remove
-
-        this.sonos.deviceDescription(function (err, output) {
-            this.logInfo("Room name: " + output.roomName);
-        }.bind(this))
+        this.logInfo("Connecting Sonos Device ", this.description.friendlyName);
 
         this.sonos.getCurrentState(function (err, track) {
-            this.currentState = track;
-            this.logInfo("Current State: " + this.currentState);
+            this.state.currentState = track;
+            this.logInfo("Current State: " + this.state.currentState);
         }.bind(this));
 
         this.sonos.getMuted(function (err, muted) {
@@ -233,6 +231,11 @@ function Sonos() {
         this.sonos.currentTrack(function (err, track) {
             this.state.currentTrack = track.title;
             this.logInfo("Current Track: " + this.state.currentTrack);
+        }.bind(this));
+
+        this.sonos.getVolume(function (err, volume) {
+            this.state.volume = volume;
+            this.logInfo("Current Volume: " + this.state.volume);
         }.bind(this));
 
     }
@@ -278,6 +281,54 @@ function Sonos() {
 
         if (!this.isSimulated()) {
             this.sonos.pause(function (err, data) {
+                // no need to do anything, really.
+            }.bind(this));
+        }
+
+        this.publishStateChange();
+    };
+
+    /**
+     *
+     *
+     */
+    Sonos.prototype.stop = function () {
+        this.logInfo("Sonos stop called");//@TODO remove
+
+        if (!this.isSimulated()) {
+            this.sonos.stop(function (err, data) {
+                // no need to do anything, really.
+            }.bind(this));
+        }
+
+        this.publishStateChange();
+    };
+
+    /**
+     *
+     *
+     */
+    Sonos.prototype.next = function () {
+        this.logInfo("Sonos next called");//@TODO remove
+
+        if (!this.isSimulated()) {
+            this.sonos.next(function (err, data) {
+                // no need to do anything, really.
+            }.bind(this));
+        }
+
+        this.publishStateChange();
+    };
+
+    /**
+     *
+     *
+     */
+    Sonos.prototype.previous = function () {
+        this.logInfo("Sonos previous called");//@TODO remove
+
+        if (!this.isSimulated()) {
+            this.sonos.previous(function (err, data) {
                 // no need to do anything, really.
             }.bind(this));
         }
