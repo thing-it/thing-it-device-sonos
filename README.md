@@ -10,7 +10,7 @@ This allows you to
 * Connect your [thing-it-node] to any Sonos device on your network
 * Control play, pause, volume, mute, etc. from anywhere
 * Integrate Sonos actions into complex scenarios and orchestrate multiple devices.
-* remote access to your SensorTag devices from everywhere over the Internet.
+* Remote access to your Sonos devices from everywhere over the Internet.
 
 by means of [thing-it-node](https://github.com/marcgille/thing-it-node) and [thing-it.com](http://www.thing-it.com).
 
