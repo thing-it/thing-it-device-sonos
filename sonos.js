@@ -114,14 +114,16 @@ function SonosDiscovery() {
      * @param options
      */
     SonosDiscovery.prototype.start = function () {
+/*
         if (this.node.isSimulated()) {
         } else {
             if (!SonosLibrary) {
                 SonosLibrary = require("sonos");
             }
 
-            this.logInfo("Sonos discovery prototype start called. Doing nothing.");//@TODO remove
+            this.logDebug("Sonos discovery prototype start called. Doing nothing.");
         }
+*/
     };
 
     /**
@@ -129,7 +131,8 @@ function SonosDiscovery() {
      * @param options
      */
     SonosDiscovery.prototype.stop = function () {
-        this.logInfo("Sonos discovery prototype stop called. Doing nothing.");//@TODO remove
+        this.logDebug("Sonos discovery prototype stop called. Doing nothing.");
+        //@TODO unregister services
     };
 }
 
@@ -147,33 +150,34 @@ function Sonos() {
             currentTrack: null,
             currentState: null,
             volume: 0,
-            muted: false
+            muted: false,
+            artist: null,
+            album: null,
+            albumArtURI: null
         };
 
-        this.logInfo("Sonos state: " + JSON.stringify(this.state));//@TODO remove
+        this.logDebug("Sonos state: " + JSON.stringify(this.state));
 
         if (this.sonos) {
-            this.logInfo("Sonos already exists in prototype start - really unexpected!");//@TODO remove
+            this.logInfo("Unexpected Condition: Sonos already exists in prototype start.");//@TODO remove
             this.connect();
-
             deferred.resolve();
         }
         else {
             if (!this.isSimulated()) {
-                this.logInfo("Sonos start called for reals...");//@TODO remove
+                this.logInfo("Starting up Sonos.");
                 this.started = true;
 
                 if (!SonosLibrary) {
                     SonosLibrary = require("sonos");
-
                     this.scan();
                 }
 
                 deferred.resolve();
             } else {
-                this.logInfo("Sonos simulation mode not implemented.")
-
+                this.logInfo("Starting up simulated Sonos.");
                 deferred.resolve();
+                this.initiateSimulation();
             }
         }
 
@@ -373,6 +377,9 @@ function Sonos() {
                 // no need to do anything, really.
             }.bind(this));
         }
+        else {
+            this.simulationData.playing = true;
+        }
 
         this.publishStateChange();
     };
@@ -388,6 +395,9 @@ function Sonos() {
             this.sonos.pause(function (err, data) {
                 // no need to do anything, really.
             }.bind(this));
+        }
+        else {
+            this.simulationData.playing = false;
         }
 
         this.publishStateChange();
@@ -405,6 +415,9 @@ function Sonos() {
                 // no need to do anything, really.
             }.bind(this));
         }
+        else {
+            this.simulationData.playing = false;
+        }
 
         this.publishStateChange();
     };
@@ -420,9 +433,14 @@ function Sonos() {
             this.sonos.next(function (err, data) {
                 // no need to do anything, really.
             }.bind(this));
+
+            this.publishStateChange();
+        }
+        else {
+            this.simulateNextSong();
         }
 
-        this.publishStateChange();
+
     };
 
     /**
@@ -434,11 +452,15 @@ function Sonos() {
 
         if (!this.isSimulated()) {
             this.sonos.previous(function (err, data) {
-                // no need to do anything, really.
+                // no need to do anything
             }.bind(this));
+
+            this.publishStateChange();
+        }
+        else{
+            this.simulatePreviousSong()
         }
 
-        this.publishStateChange();
     };
 
     /**
@@ -455,6 +477,9 @@ function Sonos() {
                 this.sonos.setMuted(muteOpposite, function (err, data) {
                 });
             }.bind(this))
+        }
+        else{
+            this.state.muted = !this.state.muted;
         }
 
         this.publishStateChange();
@@ -477,5 +502,98 @@ function Sonos() {
 
         this.publishStateChange();
     };
+
+    /**
+     *
+     *
+     */
+    Sonos.prototype.initiateSimulation = function(){
+        this.state = {
+            currentTrack: null,
+            currentState: null,
+            volume: 23,
+            muted: false,
+            artist: null,
+            album: null,
+            albumArtURI: null
+        };
+
+        this.simulationData = {
+            playing: true,
+            songNr: 0,
+            songs: [{
+                currentTrack: "My Other Love",
+                artist: "Pretty Lights",
+                album: "Filling Up The City Skies",
+                albumArtURI: "http://cont-sv5-1.pandora.com/images/public/amz/8/0/1/6/900006108_500W_500H.jpg"
+            }, {
+                currentTrack: "Rainy Streets",
+                artist: "Blue In Green",
+                album: "The Break Of Dawn",
+                albumArtURI: "http://cont-sjl-1.pandora.com/images/public/amz/8/0/1/0/885007210108_500W_500H.jpg"
+            }, {
+                currentTrack: "Ike's Mood I",
+                artist: "Visioneers",
+                album: "Dirty Old Hip-Hop",
+                albumArtURI: "http://cont-2.p-cdn.com/images/public/amz/2/2/1/7/730003107122_500W_500H.jpg"
+            }]
+        };
+
+        this.simulateSong(0);
+
+        // Simulating song changes every 15 seconds, but only if playing
+        setInterval(Sonos.prototype.simulateNextSong.bind(this), 15000);
+    }
+
+    /**
+     *
+     *
+     */
+    Sonos.prototype.simulatePreviousSong = function() {
+        if (this.simulationData.playing) {
+            this.logInfo("Simulating previous song.");
+
+            if (this.simulationData.songNr > 0) {
+                this.simulationData.songNr = (this.simulationData.songs.length - 1);
+            }
+            else {
+                this.simulationData.songNr--;
+            }
+
+            this.simulateSong(this.simulationData.songNr);
+        }
+    }
+
+    /**
+     *
+     *
+     */
+    Sonos.prototype.simulateNextSong = function() {
+        if (this.simulationData.playing) {
+            this.logInfo("Simulating next song.");
+
+            if (this.simulationData.songNr < (this.simulationData.songs.length - 1)) {
+                this.simulationData.songNr++;
+            }
+            else {
+                this.simulationData.songNr = 0;
+            }
+
+            this.simulateSong(this.simulationData.songNr);
+        }
+    }
+
+    /**
+     *
+     *
+     */
+    Sonos.prototype.simulateSong = function(index){
+        this.logInfo("Simulating song change to ", this.simulationData.songs[index]);
+        this.state.currentTrack = this.simulationData.songs[index].currentTrack;
+        this.state.artist = this.simulationData.songs[index].artist;
+        this.state.album = this.simulationData.songs[index].album;
+        this.state.albumArtURI = this.simulationData.songs[index].albumArtURI;
+        this.publishStateChange();
+    }
 
 }
