@@ -1,0 +1,106 @@
+{
+  "Event": {
+    "$": {
+      "xmlns": "urn:schemas-upnp-org:metadata-1-0/AVT/",
+      "xmlns:r": "urn:schemas-rinconnetworks-com:metadata-1-0/"
+    },
+    "InstanceID": [
+      {
+        "$": {
+          "val": "0"
+        },
+        "TransportState": [
+          {
+            "$": {
+              "val": "PLAYING"
+            }
+          }
+        ],
+        "CurrentPlayMode": [
+          {
+            "$": {
+              "val": "NORMAL"
+            }
+          }
+        ],
+        "CurrentCrossfadeMode": [
+          {
+            "$": {
+              "val": "0"
+            }
+          }
+        ],
+        "NumberOfTracks": [
+          {
+            "$": {
+              "val": "8"
+            }
+          }
+        ],
+        "CurrentTrack": [
+          {
+            "$": {
+              "val": "3"
+            }
+          }
+        ],
+        "CurrentSection": [
+          {
+            "$": {
+              "val": "0"
+            }
+          }
+        ],
+        "CurrentTrackURI": [
+          {
+            "$": {
+              "val": "pndrradio-http://audio-sv5-t1-1-v4v6.pandora.com/access/3459280537383780608?version=4&lid=104661062&token=P%2FD61htXiziuo1PXz9cO6%2Fc11GltURlc1%2F2qy53YK%2FbVEHrlj26hEC%2FbmXLsyc6WjlqFHKKJoJlr33LdX%2BPOh6zV9hZoQh1VxGhKj%2FhIBVdy%2BCnOm0UVW5k3tDYdFUisBfBk1di8Pq92XzN%2BQSkz7QRsFFu2BZsqaDb5R1lAgWRQ7SkX2GzJQZHtIrQVgXQ%2FbZ17uPyDvKJpUnHgjb9zlxOPV%2BfPP9q72FnsSvhbpyWo%2FKQ7u3GnthB%2FdQnGhf1Al3AyB75X8xqZ9mNQna%2BSe7b2bjavfFTXArN2%2BWVycB8OHoq84wj8i9Z%2Fz%2BkKs1UojFSwDS5NRA77qX7KsrePWsxObw7wCCa%2FdfX%2Bd6zK%2FanTVGbeKkUXEGp8W1p7GzhXRso1NeODW6k%3D&a=http%3a%2f%2fcont-sv5-1.pandora.com%2fimages%2fpublic%2famz%2f4%2f2%2f6%2f9%2f823979039624_500W_500H.jpg&m=3cd1eb3c04941e9fc3b6435c4fdb8ecf479fca5b48731614e331eb5d638f2a13ac9abac91d16dd01abee5b367609331da725f0529e3206f149066e1d235f35a7&f=1&r=0&g=-4.27&x=000205d0"
+            }
+          }
+        ],
+        "CurrentTrackDuration": [
+          {
+            "$": {
+              "val": "0:02:32"
+            }
+          }
+        ],
+        "CurrentTrackMetaData": [
+          {
+            "$": {
+              "val": "<DIDL-Lite xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\" xmlns:r=\"urn:schemas-rinconnetworks-com:metadata-1-0/\" xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\"><item id=\"-1\" parentID=\"-1\" restricted=\"true\"><res protocolInfo=\"pandora.com-pndrradio-http:*:audio/mpeg:*\" duration=\"0:02:32\">pndrradio-http://audio-sv5-t1-1-v4v6.pandora.com/access/3459280537383780608?version=4&amp;lid=104661062&amp;token=P%2FD61htXiziuo1PXz9cO6%2Fc11GltURlc1%2F2qy53YK%2FbVEHrlj26hEC%2FbmXLsyc6WjlqFHKKJoJlr33LdX%2BPOh6zV9hZoQh1VxGhKj%2FhIBVdy%2BCnOm0UVW5k3tDYdFUisBfBk1di8Pq92XzN%2BQSkz7QRsFFu2BZsqaDb5R1lAgWRQ7SkX2GzJQZHtIrQVgXQ%2FbZ17uPyDvKJpUnHgjb9zlxOPV%2BfPP9q72FnsSvhbpyWo%2FKQ7u3GnthB%2FdQnGhf1Al3AyB75X8xqZ9mNQna%2BSe7b2bjavfFTXArN2%2BWVycB8OHoq84wj8i9Z%2Fz%2BkKs1UojFSwDS5NRA77qX7KsrePWsxObw7wCCa%2FdfX%2Bd6zK%2FanTVGbeKkUXEGp8W1p7GzhXRso1NeODW6k%3D&amp;a=http%3a%2f%2fcont-sv5-1.pandora.com%2fimages%2fpublic%2famz%2f4%2f2%2f6%2f9%2f823979039624_500W_500H.jpg&amp;m=3cd1eb3c04941e9fc3b6435c4fdb8ecf479fca5b48731614e331eb5d638f2a13ac9abac91d16dd01abee5b367609331da725f0529e3206f149066e1d235f35a7&amp;f=1&amp;r=0&amp;g=-4.27&amp;x=000205d0</res><r:streamContent></r:streamContent><r:radioShowMd></r:radioShowMd><upnp:albumArtURI>http://cont-sv5-1.pandora.com/images/public/amz/4/2/6/9/823979039624_500W_500H.jpg</upnp:albumArtURI><dc:title>Preservation</dc:title><upnp:class>object.item.audioItem.musicTrack</upnp:class><dc:creator>Wu-Tang Clan</dc:creator><upnp:album>Think Differently Music: Wu-Tang Meets The Indie Culture (Instrumentals)</upnp:album></item></DIDL-Lite>"
+            }
+          }
+        ],
+        "r:NextTrackURI": [
+          {
+            "$": {
+              "val": "pndrradio-http://t3-1.p-cdn.com/access/7269048131403408794?version=4&lid=104661062&token=P%2FD61htXiziuo1PXz9cO6%2Fc11GltURlc1%2F2qy53YK%2FbVEHrlj26hEC%2FbmXLsyc6WjlqFHKKJoJlr33LdX%2BPOh5nQwfC%2FXvFvo9UFBQItzF8Tk2Zax%2FpttpBKirm29J%2Fatk44TaY%2B634vTuuw37cZp%2FQ3K%2B9zK6x3pbsxhv%2FeXMCQ%2F%2FAVl7ichZqSify4ud3%2B3RlizPkNbUq0FeCKyHXK793Irz9YN1zOHHGMwGipOYewUpatmqRBuZ5zvxmY0AJYiPxqylQb5jC%2BpTosS8zwanO0nlYU%2Fmt2GEYqwU0vuwAma3WjYWly%2FjdZpWkMsHVofe7uW8uLAtoSzxoKr%2BhGimACxEU9KmotqGS9rSdngQNq415T%2BQQPydxhY0ph0v%2B31Kvp%2Fq%2Fgqxc%3D&a=&m=78e90c995450cc21c3b6435c4fdb8ecf479fca5b48731614bf5a45cd60e66a604149beef17993d508f134d909bdaa7a62cde54616b1996d9c32ce9f8e0513bec&f=1&r=0&g=-2.33&x=000205d0"
+            }
+          }
+        ],
+        "r:NextTrackMetaData": [
+          {
+            "$": {
+              "val": "<DIDL-Lite xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\" xmlns:r=\"urn:schemas-rinconnetworks-com:metadata-1-0/\" xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\"><item id=\"-1\" parentID=\"-1\" restricted=\"true\"><res protocolInfo=\"pandora.com-pndrradio-http:*:audio/mpeg:*\" duration=\"0:03:04\">pndrradio-http://t3-1.p-cdn.com/access/7269048131403408794?version=4&amp;lid=104661062&amp;token=P%2FD61htXiziuo1PXz9cO6%2Fc11GltURlc1%2F2qy53YK%2FbVEHrlj26hEC%2FbmXLsyc6WjlqFHKKJoJlr33LdX%2BPOh5nQwfC%2FXvFvo9UFBQItzF8Tk2Zax%2FpttpBKirm29J%2Fatk44TaY%2B634vTuuw37cZp%2FQ3K%2B9zK6x3pbsxhv%2FeXMCQ%2F%2FAVl7ichZqSify4ud3%2B3RlizPkNbUq0FeCKyHXK793Irz9YN1zOHHGMwGipOYewUpatmqRBuZ5zvxmY0AJYiPxqylQb5jC%2BpTosS8zwanO0nlYU%2Fmt2GEYqwU0vuwAma3WjYWly%2FjdZpWkMsHVofe7uW8uLAtoSzxoKr%2BhGimACxEU9KmotqGS9rSdngQNq415T%2BQQPydxhY0ph0v%2B31Kvp%2Fq%2Fgqxc%3D&amp;a=&amp;m=78e90c995450cc21c3b6435c4fdb8ecf479fca5b48731614bf5a45cd60e66a604149beef17993d508f134d909bdaa7a62cde54616b1996d9c32ce9f8e0513bec&amp;f=1&amp;r=0&amp;g=-2.33&amp;x=000205d0</res><upnp:albumArtURI></upnp:albumArtURI><dc:title>Clap Clap (Handclapping Song) (Instrumental Mix)</dc:title><upnp:class>object.item.audioItem.musicTrack</upnp:class><dc:creator>Miles Bonny &amp; Kova</dc:creator><upnp:album>Clap Clap</upnp:album></item></DIDL-Lite>"
+            }
+          }
+        ],
+        "r:EnqueuedTransportURI": [
+          {
+            "$": {
+              "val": "pndrradio:1892402881810464838"
+            }
+          }
+        ],
+        "r:EnqueuedTransportURIMetaData": [
+          {
+            "$": {
+              "val": "<DIDL-Lite xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\" xmlns:r=\"urn:schemas-rinconnetworks-com:metadata-1-0/\" xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\"><item id=\"OOOX1892402881810464838\" parentID=\"0\" restricted=\"true\"><dc:title>Just Jammin&apos; Radio</dc:title><upnp:class>object.item.audioItem.audioBroadcast.sonos-favorite</upnp:class><desc id=\"cdudn\" nameSpace=\"urn:schemas-rinconnetworks-com:metadata-1-0/\">SA_RINCON3_klaus.d.berberich@gmail.com</desc></item></DIDL-Lite>"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

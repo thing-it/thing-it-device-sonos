@@ -1,0 +1,49 @@
+{
+  "DIDL-Lite": {
+    "$": {
+      "xmlns:dc": "http://purl.org/dc/elements/1.1/",
+      "xmlns:upnp": "urn:schemas-upnp-org:metadata-1-0/upnp/",
+      "xmlns:r": "urn:schemas-rinconnetworks-com:metadata-1-0/",
+      "xmlns": "urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/"
+    },
+    "item": [
+      {
+        "$": {
+          "id": "-1",
+          "parentID": "-1",
+          "restricted": "true"
+        },
+        "res": [
+          {
+            "_": "pndrradio-http://audio-ch1-t2-1-v4v6.pandora.com/access/?version=4&lid=104661062&token=ECNTR7juCmidAAWkiyZwF%2Bw%2FmRKp90yyF5bkinQJ6Eu4Dm1QIqroVAUW39HqGmIbPwUYMl7k5dP71QNv2eLdKaLIh4Ry8A2td2KOhIfDyFrL4%2BhvmlNJI%2FPWkZiBlHCpj8NSwWmKBOZ8v9EmNfJvGBHEMROaLKQAdKdIxesrraxhT0dT%2F8OEItGQIunxn2F0uepfUT4bidVgOg%2FZbHi92m%2BaxhxX8fbrb4Ia3EYm6YZBUwSz4LdA%2FNPXAJ76WcDe1FhB26h7o2QbeGZ2Oa84BQeXMweqzdomL%2B6Q6bPXB%2Brv5OoYm%2FjeibjDUOGa8C4mo3KKlZJGxtJtBx8Ap1nNkxLPbrbqZV6EdM5vHnC0nQG3jkOIDfXxmuuBDCZnkjZa6zTzVCOdNIY%3D&a=&m=5bbcb875759a8e2ec3b6435c4fdb8ecf479fca5b4873161449a3d905b7626ae5a0d9c6932c98d0140fd2cb710d7cd3ba3d54241f12f4450813c66fc676033061&f=1&r=0&g=-7.06&x=00020ce6",
+            "$": {
+              "protocolInfo": "pandora.com-pndrradio-http:*:audio/mpeg:*",
+              "duration": "0:04:20"
+            }
+          }
+        ],
+        "r:streamContent": [
+          ""
+        ],
+        "r:radioShowMd": [
+          ""
+        ],
+        "upnp:albumArtURI": [
+          ""
+        ],
+        "dc:title": [
+          "Drag Your Feet"
+        ],
+        "upnp:class": [
+          "object.item.audioItem.musicTrack"
+        ],
+        "dc:creator": [
+          "Edseven"
+        ],
+        "upnp:album": [
+          "Edseven & The Exposure Remixes"
+        ]
+      }
+    ]
+  }
+}

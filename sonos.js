@@ -86,7 +86,6 @@ module.exports = {
 
 var q = require('q');
 var SonosLibrary;
-//var noble = require('noble');
 
 function SonosDiscovery() {
     /**
@@ -125,6 +124,7 @@ function Sonos() {
 
         this.state = {
             currentTrack: null,
+            currentState: null,
             volume: 0,
             muted: false
         };
@@ -215,9 +215,8 @@ function Sonos() {
     /**
      *
      */
-    Sonos.prototype.connect = function () {
-        this.logInfo("Connecting Sonos Device ", this.description.friendlyName);
-
+    Sonos.prototype.readStatus = function () {
+        var deferred = q.defer();
         this.sonos.getCurrentState(function (err, track) {
             this.state.currentState = track;
             this.logInfo("Current State: " + this.state.currentState);
@@ -231,6 +230,7 @@ function Sonos() {
         this.sonos.currentTrack(function (err, track) {
             this.state.currentTrack = track.title;
             this.logInfo("Current Track: " + this.state.currentTrack);
+            this.logInfo(JSON.stringify(track));
         }.bind(this));
 
         this.sonos.getVolume(function (err, volume) {
@@ -238,6 +238,64 @@ function Sonos() {
             this.logInfo("Current Volume: " + this.state.volume);
         }.bind(this));
 
+        this.publishStateChange();
+        deferred.resolve();
+        return deferred.promise;
+    }
+
+    /**
+     *
+     */
+    Sonos.prototype.registerEvents = function() {
+        this.logInfo("Registering for zone events.");
+        var Listener = require('sonos/lib/events/listener');
+        this.logInfo("Got the Listener.");
+        var listener = new Listener(this.sonos);
+        this.logInfo("Initiated the listener.");
+
+        listener.listen(function (err){
+            if (err) throw err;
+
+            listener.addService('/MediaRenderer/AVTransport/Event', function (error, sid) {
+                if (error) {
+                    this.logInfo("Error: " + JSON.stringify(error));
+                    throw error;
+                }
+                this.logInfo('Successfully subscribed, with subscription id', sid);
+            }.bind(this));
+
+            listener.on('serviceEvent', function (endpoint, sid, data) {
+                this.logDebug('Received event from', endpoint, '(' + sid + ').')
+                xml2js = require('sonos/node_modules/xml2js');
+
+                xml2js.parseString(data.LastChange, function (err, avTransportEvent) {
+                    var currentTrackMetaDataXML = avTransportEvent.Event.InstanceID[0].CurrentTrackMetaData[0].$.val;
+
+                    xml2js.parseString(currentTrackMetaDataXML, function (err, trackMetaData) {
+                        this.logInfo("Notified about current track: " + trackMetaData["DIDL-Lite"].item[0]["dc:title"][0]);
+                        this.state.currentTrack = trackMetaData["DIDL-Lite"].item[0]["dc:title"][0];
+                        this.publishStateChange();
+                    }.bind(this));
+
+                }.bind(this));
+
+            }.bind(this));
+
+            // TransportState
+
+
+        }.bind(this));
+
+        this.logInfo("Done registering events.");
+    }
+
+    /**
+     *
+     */
+    Sonos.prototype.connect = function () {
+        this.logInfo("Connecting Sonos Device ", this.description.friendlyName);
+        this.readStatus();
+        this.registerEvents();
     }
 
     /**
