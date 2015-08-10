@@ -18,8 +18,8 @@ by means of [thing-it-node](https://github.com/marcgille/thing-it-node) and [thi
 
 Prerequesites:
 
-* [set up](http://www.thing-it.com/thing-it/index.html?document=gettingStarted#/documentationPanel) your [thing-it] Node Box and
-* Your Node Box is connected to the same network your Sonos is connected to.
+* [Set up](http://www.thing-it.com/thing-it/index.html?document=gettingStarted#/documentationPanel) your [thing-it] Node Box and
+* Connect the Node Box to the same network your Sonos is connected to.
 
 
 Installation:
