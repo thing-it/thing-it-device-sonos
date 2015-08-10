@@ -19,10 +19,18 @@ by means of [thing-it-node](https://github.com/marcgille/thing-it-node) and [thi
 Prerequesites:
 
 * [set up](http://www.thing-it.com/thing-it/index.html?document=gettingStarted#/documentationPanel) your [thing-it] Node Box and
-* configured or copied a [thing-it] Mesh with a Sonos,
+* Your Node Box is connected to the same network your Sonos is connected to.
 
-Make sure to modify the Mesh to your Sonos' IP address. You can find the IP address of your Sonos player in your Sonos
-mobile app under "About My Sonos System".
+
+Installation:
+
+* Configure or copy a [thing-it] Mesh
+* Add a Sonos device
+* Configure the Sonos device by providing the name of the Sonos player you want to control (e.g. Kitchen)
+
 
 ## User Interface
 
+The UI display's the connected Sonos' state and allows to control it.
+
+<img src="./documentation/images/sonos-mobile-screenshot.png">
