@@ -170,9 +170,9 @@ function Sonos() {
 
                 if (!SonosLibrary) {
                     SonosLibrary = require("sonos");
-                    this.scan();
                 }
 
+                this.scan();
                 deferred.resolve();
             } else {
                 this.logInfo("Starting up simulated Sonos.");
@@ -250,7 +250,7 @@ function Sonos() {
             this.logDebug("Current Volume: " + this.state.volume);
         }.bind(this));
 
-        this.logInfo("Current Track: ", this.state.currentTrack, " Volume: ", this.state.volume, " State: ", this.state.currentState);
+        this.logDebug("Current Track: ", this.state.currentTrack, " Volume: ", this.state.volume, " State: ", this.state.currentState);
         this.publishStateChange();
         deferred.resolve();
         return deferred.promise;
@@ -293,11 +293,20 @@ function Sonos() {
                 this.logInfo('Successfully subscribed, with subscription id', sid);
             }.bind(this));
 
+            // register for playback rendering, eg bass, treble, volume and EQ.
+            listener.addService('/MediaRenderer/RenderingControl/Event', function (error, sid) {
+                if (error) {
+                    this.logError("Error: " + JSON.stringify(error));
+                    throw error;
+                }
+                this.logInfo('Successfully subscribed, with subscription id', sid);
+            }.bind(this));
+
             listener.on('serviceEvent', function (endpoint, sid, data) {
-                this.logDebug('Received transport event from', endpoint, '(' + sid + ').');
+                this.logInfo('Received transport event from', endpoint, '(' + sid + ').');
 
                 this.readStatus();
-                /*
+                /* The following code only works for AVTransport events
                  xml2js = require('sonos/node_modules/xml2js');
 
                  xml2js.parseString(data.LastChange, function (err, avTransportEvent) {
@@ -321,24 +330,10 @@ function Sonos() {
                  }.bind(this));
                  */
             }.bind(this));
-
-            // register for playback rendering, eg bass, treble, volume and EQ.
-            listener.addService('/MediaRenderer/RenderingControl/Event', function (error, sid) {
-                if (error) {
-                    this.logError("Error: " + JSON.stringify(error));
-                    throw error;
-                }
-                this.logInfo('Successfully subscribed, with subscription id', sid);
-            }.bind(this));
-
-            listener.on('serviceEvent', function (endpoint, sid, data) {
-                this.logDebug('Received playback rendering event from', endpoint, '(' + sid + ').');
-                this.readStatus();
-            }.bind(this));
-
         }.bind(this));
 
         this.logInfo("Done registering events.");
+        setInterval(Sonos.prototype.readStatus.bind(this), 1000);
     }
 
     /**
