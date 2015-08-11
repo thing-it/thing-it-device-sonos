@@ -70,7 +70,7 @@ module.exports = {
             label: "Previous"
         }, {
             id: "changeVolume",
-            label: "Previous"
+            label: "Change Volume"
         }],
         configuration: [{
             id: "simulated",
@@ -303,7 +303,7 @@ function Sonos() {
             }.bind(this));
 
             listener.on('serviceEvent', function (endpoint, sid, data) {
-                this.logInfo('Received transport event from', endpoint, '(' + sid + ').');
+                this.logDebug('Received event from', endpoint, '(' + sid + ').');
 
                 this.readStatus();
                 /* The following code only works for AVTransport events
@@ -484,10 +484,42 @@ function Sonos() {
      *
      *
      */
-    Sonos.prototype.changeVolume = function (volume) {
+    Sonos.prototype.isPlaying = function(){
+        return ((this.state.currentState == "playing") || (this.state.currentState == "transitioning"));
+    }
+
+    /**
+     *
+     *
+     */
+    Sonos.prototype.isPaused = function(){
+        return (this.state.currentState == "paused");
+    }
+
+    /**
+     *
+     *
+     */
+    Sonos.prototype.isStopped = function(){
+        return (this.state.currentState == "stopped");
+    }
+
+    /**
+     *
+     *
+     */
+    Sonos.prototype.isMuted = function(){
+        return this.state.muted;
+    }
+
+    /**
+     *
+     *
+     */
+    Sonos.prototype.changeVolume = function (parameters) {
         this.logDebug("Sonos changeVolume called");
 
-        this.state.volume = volume;
+        this.state.volume = parameters.level;
 
         if (!this.isSimulated()) {
             this.sonos.setVolume(this.state.volume, function (err, data) {

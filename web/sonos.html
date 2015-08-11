@@ -50,10 +50,10 @@
                            ti-change="panel.callDeviceService(component, 'changeVolume', {level: component._state.volume} )">
 
                 </td>
-                <td style="width: 15%; text-align: center;"><a ng-show="component._state.switch"
+                <td style="width: 15%; text-align: center;"><a ng-show="component._state.muted"
                                                                ng-click="panel.callDeviceService(component, 'mute')"><i
                         class="fa fa-volume-off"></i></a>
-                    <a ng-hide="component._state.switch" ng-click="panel.callDeviceService(component, 'mute')"><i
+                    <a ng-hide="component._state.muted" ng-click="panel.callDeviceService(component, 'mute')"><i
                             class="fa fa-volume-up"></i></a></td>
             </tr>
         </table>
