@@ -373,7 +373,7 @@ function Sonos() {
             }.bind(this));
         }
         else {
-            this.simulationData.playing = true;
+            this.state.currentState = "playing";
         }
 
         this.publishStateChange();
@@ -392,7 +392,7 @@ function Sonos() {
             }.bind(this));
         }
         else {
-            this.simulationData.playing = false;
+            this.state.currentState = "paused";
         }
 
         this.publishStateChange();
@@ -411,7 +411,7 @@ function Sonos() {
             }.bind(this));
         }
         else {
-            this.simulationData.playing = false;
+            this.state.currentState = "stopped";
         }
 
         this.publishStateChange();
@@ -537,7 +537,7 @@ function Sonos() {
     Sonos.prototype.initiateSimulation = function(){
         this.state = {
             currentTrack: null,
-            currentState: null,
+            currentState: "playing",
             volume: 23,
             muted: false,
             artist: null,
@@ -546,7 +546,6 @@ function Sonos() {
         };
 
         this.simulationData = {
-            playing: true,
             songNr: 0,
             songs: [{
                 currentTrack: "My Other Love",
@@ -569,7 +568,11 @@ function Sonos() {
         this.simulateSong(0);
 
         // Simulating song changes every 15 seconds, but only if playing
-        setInterval(Sonos.prototype.simulateNextSong.bind(this), 15000);
+        setInterval(function () {
+            if (this.isPlaying()){
+                this.simulateNextSong();
+            }
+        }.bind(this), 15000);
     }
 
     /**
@@ -577,18 +580,16 @@ function Sonos() {
      *
      */
     Sonos.prototype.simulatePreviousSong = function() {
-        if (this.simulationData.playing) {
-            this.logInfo("Simulating previous song.");
+        this.logInfo("Simulating previous song.");
 
-            if (this.simulationData.songNr > 0) {
-                this.simulationData.songNr = (this.simulationData.songs.length - 1);
-            }
-            else {
-                this.simulationData.songNr--;
-            }
-
-            this.simulateSong(this.simulationData.songNr);
+        if (this.simulationData.songNr == 0) {
+            this.simulationData.songNr = (this.simulationData.songs.length - 1);
         }
+        else {
+            this.simulationData.songNr--;
+        }
+
+        this.simulateSong(this.simulationData.songNr);
     }
 
     /**
@@ -596,18 +597,16 @@ function Sonos() {
      *
      */
     Sonos.prototype.simulateNextSong = function() {
-        if (this.simulationData.playing) {
-            this.logInfo("Simulating next song.");
+        this.logInfo("Simulating next song.");
 
-            if (this.simulationData.songNr < (this.simulationData.songs.length - 1)) {
-                this.simulationData.songNr++;
-            }
-            else {
-                this.simulationData.songNr = 0;
-            }
-
-            this.simulateSong(this.simulationData.songNr);
+        if (this.simulationData.songNr < (this.simulationData.songs.length - 1)) {
+            this.simulationData.songNr++;
         }
+        else {
+            this.simulationData.songNr = 0;
+        }
+
+        this.simulateSong(this.simulationData.songNr);
     }
 
     /**
