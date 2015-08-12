@@ -3,6 +3,7 @@
   "version": "0.1.4",
   "description": "[thing-it-node] Device Plugin for Sonos players.",
   "authors": "Klaus Berberich, Marc Gille",
+  "license": "MIT",
   "keywords": [
     "IoT",
     "thing-it",
