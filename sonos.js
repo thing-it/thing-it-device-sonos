@@ -193,7 +193,7 @@ function Sonos() {
 
         sonosSearch.on('DeviceAvailable', function (sonos) {
             var deferred = q.defer();
-            this.logInfo("Found Sonos " + sonos.host);
+            this.logDebug("Found Sonos " + sonos.host);
 
             sonos.deviceDescription(function (err, output) {
                 var deferred = q.defer();
@@ -209,7 +209,7 @@ function Sonos() {
                         this.connect();
                     }
                     else {
-                        this.logInfo("Ignoring host " + sonos.host + " with room name " + output.roomName
+                        this.logDebug("Ignoring host " + sonos.host + " with room name " + output.roomName
                             + " and friendly name " + output.friendlyName);
                     }
                 }
@@ -287,10 +287,11 @@ function Sonos() {
                 // Register for play, pause, etc.
             listener.addService('/MediaRenderer/AVTransport/Event', function (error, sid) {
                 if (error) {
-                    this.logInfo("Error: " + JSON.stringify(error));
-                    throw error;
+                    this.logError("Error subscribing to event: " + JSON.stringify(error));
                 }
-                this.logInfo('Successfully subscribed, with subscription id', sid);
+                else {
+                    this.logDebug('Successfully subscribed, with subscription id', sid);
+                }
             }.bind(this));
 
             // register for playback rendering, eg bass, treble, volume and EQ.
@@ -299,7 +300,7 @@ function Sonos() {
                     this.logError("Error: " + JSON.stringify(error));
                     throw error;
                 }
-                this.logInfo('Successfully subscribed, with subscription id', sid);
+                this.logDebug('Successfully subscribed, with subscription id', sid);
             }.bind(this));
 
             listener.on('serviceEvent', function (endpoint, sid, data) {
@@ -332,7 +333,7 @@ function Sonos() {
             }.bind(this));
         }.bind(this));
 
-        this.logInfo("Done registering events.");
+        this.logDebug("Done registering events.");
         setInterval(Sonos.prototype.readStatus.bind(this), 1000);
     }
 
@@ -365,7 +366,7 @@ function Sonos() {
      *
      */
     Sonos.prototype.play = function () {
-        this.logInfo("Sonos play called");//@TODO remove
+        this.logDebug("Sonos play called");
 
         if (!this.isSimulated()) {
             this.sonos.play(function (err, data) {
@@ -384,7 +385,7 @@ function Sonos() {
      *
      */
     Sonos.prototype.pause = function () {
-        this.logInfo("Sonos pause called");//@TODO remove
+        this.logDebug("Sonos pause called");//@TODO remove
 
         if (!this.isSimulated()) {
             this.sonos.pause(function (err, data) {
@@ -403,7 +404,7 @@ function Sonos() {
      *
      */
     Sonos.prototype.stop = function () {
-        this.logInfo("Sonos stop called");//@TODO remove
+        this.logDebug("Sonos stop called");//@TODO remove
 
         if (!this.isSimulated()) {
             this.sonos.stop(function (err, data) {
@@ -422,7 +423,7 @@ function Sonos() {
      *
      */
     Sonos.prototype.next = function () {
-        this.logInfo("Sonos next called");//@TODO remove
+        this.logDebug("Sonos next called");//@TODO remove
 
         if (!this.isSimulated()) {
             this.sonos.next(function (err, data) {
@@ -443,7 +444,7 @@ function Sonos() {
      *
      */
     Sonos.prototype.previous = function () {
-        this.logInfo("Sonos previous called");//@TODO remove
+        this.logDebug("Sonos previous called");//@TODO remove
 
         if (!this.isSimulated()) {
             this.sonos.previous(function (err, data) {
@@ -468,7 +469,7 @@ function Sonos() {
         if (!this.isSimulated()) {
             this.sonos.getMuted(function (err, muted) {
                 var muteOpposite = !muted;
-                this.logInfo("Setting mute to " + muteOpposite);
+                this.logDebug("Setting mute to " + muteOpposite);
                 this.sonos.setMuted(muteOpposite, function (err, data) {
                 });
             }.bind(this))
@@ -580,7 +581,7 @@ function Sonos() {
      *
      */
     Sonos.prototype.simulatePreviousSong = function() {
-        this.logInfo("Simulating previous song.");
+        this.logDebug("Simulating previous song.");
 
         if (this.simulationData.songNr == 0) {
             this.simulationData.songNr = (this.simulationData.songs.length - 1);
@@ -597,7 +598,7 @@ function Sonos() {
      *
      */
     Sonos.prototype.simulateNextSong = function() {
-        this.logInfo("Simulating next song.");
+        this.logDebug("Simulating next song.");
 
         if (this.simulationData.songNr < (this.simulationData.songs.length - 1)) {
             this.simulationData.songNr++;
@@ -614,7 +615,7 @@ function Sonos() {
      *
      */
     Sonos.prototype.simulateSong = function(index){
-        this.logInfo("Simulating song change to ", this.simulationData.songs[index]);
+        this.logDebug("Simulating song change to ", this.simulationData.songs[index]);
         this.state.currentTrack = this.simulationData.songs[index].currentTrack;
         this.state.artist = this.simulationData.songs[index].artist;
         this.state.album = this.simulationData.songs[index].album;
