@@ -1,61 +1,78 @@
-<div style="width: 100%; display: table;">
-    <div style="display: table-cell; text-align: center;">
-        <table style="width: 100%; margin-left: 20px; margin-right: 20px;">
-            <tr>
-                <td colspan="2" style="padding-bottom: 5px;"><img src="{{component._state.albumArtURI}}" width="229" height="229"/></td>
-            </tr>
-            <tr>
-                <td colspan="2" style="width: 70%; text-align: center;">
-                    <table class="buttonGrid" style="display: inline-block;">
-                        <tr>
-                            <td>
-                                <div class="circleButton" ng-click="panel.callDeviceService(component, 'previous')">
-                                    <i class="fa fa-fast-backward"></i>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="circleButton" ng-click="panel.callDeviceService(component, 'play')">
-                                    <i class="fa fa-play"></i>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="circleButton" ng-click="panel.callDeviceService(component, 'pause')">
-                                    <i class="fa fa-pause"></i>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="circleButton" ng-click="panel.callDeviceService(component, 'stop')">
-                                    <i class="fa fa-stop"></i>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="circleButton" ng-click="panel.callDeviceService(component, 'next')">
-                                    <i class="fa fa-fast-forward"></i>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" style="text-align: center;">{{component._state.currentTrack}} (by {{component._state.artist}})</td>
-            </tr>
-            <tr>
-                <td colspan="2" style="padding-bottom: 10px; text-align: center;">Album: {{component._state.album}}</td>
-            </tr>
-            <tr>
-                <td style="width: 85%">
-                    <input ti-slider=""
-                           ti-model="component._state.volume" ti-min="0" ti-max="100"
-                           ti-change="panel.callDeviceService(component, 'changeVolume', {level: component._state.volume} )">
+<style>
+    .trackImage {
+        -webkit-transform: perspective(500px) rotateY(30deg);
+        -moz-transform: perspective(500px) rotateY(30deg);
+        -o-transform: perspective(500px) rotateY(30deg);
+        width: 40%;
+        float: left;
+        -webkit-box-reflect: below -5px -webkit-gradient(linear, left top, left bottom, from(transparent),
+        color-stop(80%, transparent), to(rgba(255, 255, 255, 0.3)));
+    }
+</style>
+<div style="display: block;">
+    <div style="padding: 1em;">
+        <img class="trackImage" src="{{component._state.albumArtURI}}"/>
 
+        <div style="width: 50%; text-align: left; padding-left: 1em;">
+            <div class="ellipsisTextOverflow">
+                <div class="titleTextTransform titleFont ternaryColor">Current Track</div>
+                <div>{{component._state.currentTrack}}</div>
+            </div>
+            <div class="ellipsisTextOverflow">
+                <div class="titleTextTransform titleFont ternaryColor">Artist</div>
+                <div>{{component._state.artist}}</div>
+            </div>
+            <div class="ellipsisTextOverflow">
+                <div class="titleTextTransform titleFont ternaryColor">Album</div>
+                <div>{{component._state.album}}</div>
+            </div>
+        </div>
+    </div>
+    <div style="clear: both; margin-top: 2em;">
+        <table class="buttonGrid" style="display: inline-block;">
+            <tr>
+                <td>
+                    <div class="circleButton" ng-click="panel.callDeviceService(component, 'previous')">
+                        <i class="fa fa-fast-backward"></i>
+                    </div>
                 </td>
-                <td style="width: 15%; text-align: center;"><a ng-show="component._state.muted"
-                                                               ng-click="panel.callDeviceService(component, 'mute')"><i
-                        class="fa fa-volume-off"></i></a>
-                    <a ng-hide="component._state.muted" ng-click="panel.callDeviceService(component, 'mute')"><i
-                            class="fa fa-volume-up"></i></a></td>
+                <td>
+                    <div class="circleButton" ng-click="panel.callDeviceService(component, 'play')">
+                        <i class="fa fa-play"></i>
+                    </div>
+                </td>
+                <td>
+                    <div class="circleButton" ng-click="panel.callDeviceService(component, 'pause')">
+                        <i class="fa fa-pause"></i>
+                    </div>
+                </td>
+                <td>
+                    <div class="circleButton" ng-click="panel.callDeviceService(component, 'stop')">
+                        <i class="fa fa-stop"></i>
+                    </div>
+                </td>
+                <td>
+                    <div class="circleButton" ng-click="panel.callDeviceService(component, 'next')">
+                        <i class="fa fa-fast-forward"></i>
+                    </div>
+                </td>
             </tr>
         </table>
     </div>
+    <table style="width: 100%; margin-top: 1em;">
+        <tr>
+            <td style="width: 99%">
+                <input ti-slider=""
+                       ti-model="component._state.volume" ti-min="-80" ti-max="0"
+                       ti-change="panel.callDeviceService(component, 'changeVolume', {level: component._state.volume} )">
+
+            </td>
+            <td style="width: 1.5em; text-align: center;"><a ng-show="component._state.muted"
+                                                             ng-click="panel.callDeviceService(component, 'mute')"><i
+                    class="fa fa-volume-off"></i></a>
+                <a ng-hide="component._state.muted" ng-click="panel.callDeviceService(component, 'mute')"><i
+                        class="fa fa-volume-up"></i></a>
+            </td>
+        </tr>
+    </table>
 </div>
