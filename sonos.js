@@ -519,8 +519,12 @@ function Sonos() {
      */
     Sonos.prototype.changeVolume = function (parameters) {
         this.logDebug("Sonos changeVolume called");
+        this.setVolume(parameters.level);
+    };
 
-        this.state.volume = parameters.level;
+    Sonos.prototype.setVolume = function(volume){
+        this.logDebug("Sonos setVolume called");
+        this.state.volume = volume;
 
         if (!this.isSimulated()) {
             this.sonos.setVolume(this.state.volume, function (err, data) {
@@ -529,7 +533,7 @@ function Sonos() {
         }
 
         this.publishStateChange();
-    };
+    }
 
     /**
      *
