@@ -15,20 +15,21 @@
 
         <div style="width: 50%; text-align: left; padding-left: 1em;">
             <div class="ellipsisTextOverflow">
-                <div class="titleTextTransform titleFont ternaryColor">Current Track</div>
+                <div class="upperCase titleFont ternaryColor">Current Track</div>
                 <div>{{component._state.currentTrack}}</div>
             </div>
             <div class="ellipsisTextOverflow">
-                <div class="titleTextTransform titleFont ternaryColor">Artist</div>
+                <div class="upperCase titleFont ternaryColor">Artist</div>
                 <div>{{component._state.artist}}</div>
             </div>
             <div class="ellipsisTextOverflow">
-                <div class="titleTextTransform titleFont ternaryColor">Album</div>
+                <div class="upperCase titleFont ternaryColor">Album</div>
                 <div>{{component._state.album}}</div>
             </div>
         </div>
     </div>
-    <div style="clear: both; margin-top: 2em;">
+    <div style="margin-top: 2em;" class="horizontalLine"></div>
+    <div style="clear: both;">
         <table class="buttonGrid" style="display: inline-block;">
             <tr>
                 <td>
@@ -59,6 +60,7 @@
             </tr>
         </table>
     </div>
+    <div class="horizontalLine"></div>
     <table style="width: 100%; margin-top: 1em;">
         <tr>
             <td style="width: 99%">
