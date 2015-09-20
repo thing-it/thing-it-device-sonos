@@ -28,33 +28,33 @@
             </div>
         </div>
     </div>
-    <div style="margin-top: 2em;" class="horizontalLine"></div>
+    <div style="margin-top: 1em;" class="horizontalLine"></div>
     <div style="clear: both;">
-        <table class="buttonGrid" style="display: inline-block;">
+        <table class="buttonGrid" style="display: inline-block; margin-top: 1em; margin-bottom: 1em;">
             <tr>
                 <td>
                     <div class="circleButton" ng-click="panel.callDeviceService(component, 'previous')">
-                        <i class="fa fa-fast-backward"></i>
+                        <i class="icon sl-backward-1"></i>
                     </div>
                 </td>
                 <td>
                     <div class="circleButton" ng-click="panel.callDeviceService(component, 'play')">
-                        <i class="fa fa-play"></i>
+                        <i class="icon sl-play-1"></i>
                     </div>
                 </td>
                 <td>
                     <div class="circleButton" ng-click="panel.callDeviceService(component, 'pause')">
-                        <i class="fa fa-pause"></i>
+                        <i class="icon sl-pause-1"></i>
                     </div>
                 </td>
                 <td>
                     <div class="circleButton" ng-click="panel.callDeviceService(component, 'stop')">
-                        <i class="fa fa-stop"></i>
+                        <i class="icon sl-stop-1"></i>
                     </div>
                 </td>
                 <td>
                     <div class="circleButton" ng-click="panel.callDeviceService(component, 'next')">
-                        <i class="fa fa-fast-forward"></i>
+                        <i class="icon sl-forward-1"></i>
                     </div>
                 </td>
             </tr>
@@ -69,11 +69,11 @@
                        ti-change="panel.callDeviceService(component, 'changeVolume', {level: component._state.volume} )">
 
             </td>
-            <td style="width: 1.5em; text-align: center;"><a ng-show="component._state.muted"
-                                                             ng-click="panel.callDeviceService(component, 'mute')"><i
-                    class="fa fa-volume-off"></i></a>
+            <td style="width: 3em; text-align: center; padding: 1em;"><a ng-show="component._state.muted"
+                                                                         ng-click="panel.callDeviceService(component, 'mute')"><i
+                    class="icon sl-volume-mute-1"></i></a>
                 <a ng-hide="component._state.muted" ng-click="panel.callDeviceService(component, 'mute')"><i
-                        class="fa fa-volume-up"></i></a>
+                        class="icon sl-volume-medium"></i></a>
             </td>
         </tr>
     </table>
