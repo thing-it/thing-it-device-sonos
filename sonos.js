@@ -238,11 +238,13 @@ function Sonos() {
         }.bind(this))
 
         this.sonos.currentTrack(function (err, track) {
-            this.state.currentTrack = track.title,
-            this.state.artist = track.artist,
-            this.state.album = track.album,
-            this.state.albumArtURI = track.albumArtURI
-            this.logDebug("Current State: ", this.state);
+            if (track) {
+                this.state.currentTrack = track.title,
+                    this.state.artist = track.artist,
+                    this.state.album = track.album,
+                    this.state.albumArtURI = track.albumArtURI
+                this.logDebug("Current State: ", this.state);
+            }
         }.bind(this));
 
         this.sonos.getVolume(function (err, volume) {
