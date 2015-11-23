@@ -406,7 +406,7 @@ function Sonos() {
      *
      */
     Sonos.prototype.stop = function () {
-        this.logDebug("Sonos stop called");//@TODO remove
+        this.logDebug("Sonos stop called");
 
         if (!this.isSimulated()) {
             this.sonos.stop(function (err, data) {
