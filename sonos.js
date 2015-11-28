@@ -156,6 +156,9 @@ function Sonos() {
             albumArtURI: null
         };
 
+        this.simulationIntervals = [];
+        this.intervals = [];
+
         this.logDebug("Sonos state: " + JSON.stringify(this.state));
 
         if (this.sonos) {
@@ -183,6 +186,19 @@ function Sonos() {
 
         return deferred.promise;
     };
+
+    Yamaha.prototype.stop = function (){
+        this.started = false;
+        this.logInfo("Stopping Sonos Device " + this.configuration.name + ".");
+
+        for (var interval in this.intervals){
+            clearInterval(interval);
+        }
+
+        for (var interval in this.simulationIntervals){
+            clearInterval(interval);
+        }
+    }
 
     /**
      *
@@ -336,7 +352,7 @@ function Sonos() {
         }.bind(this));
 
         this.logDebug("Done registering events.");
-        setInterval(Sonos.prototype.readStatus.bind(this), 1000);
+        this.intervals.push(setInterval(Sonos.prototype.readStatus.bind(this), 1000));
     }
 
     /**
@@ -575,11 +591,11 @@ function Sonos() {
         this.simulateSong(0);
 
         // Simulating song changes every 15 seconds, but only if playing
-        setInterval(function () {
+        this.simulationIntervals.push(setInterval(function () {
             if (this.isPlaying()){
                 this.simulateNextSong();
             }
-        }.bind(this), 15000);
+        }.bind(this), 15000));
     }
 
     /**
