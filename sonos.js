@@ -187,7 +187,7 @@ function Sonos() {
         return deferred.promise;
     };
 
-    Yamaha.prototype.stop = function (){
+    Sonos.prototype.stop = function (){
         this.started = false;
         this.logInfo("Stopping Sonos Device " + this.configuration.name + ".");
 
