@@ -114,16 +114,39 @@ function SonosDiscovery() {
      * @param options
      */
     SonosDiscovery.prototype.start = function () {
-/*
         if (this.node.isSimulated()) {
         } else {
             if (!SonosLibrary) {
                 SonosLibrary = require("sonos");
             }
 
-            this.logDebug("Sonos discovery prototype start called. Doing nothing.");
+            this.logInfo("Scanning for Sonos hosts started.");
+            var sonosSearch = SonosLibrary.search();
+
+            sonosSearch.on('DeviceAvailable', function (sonos) {
+                sonos.deviceDescription(function (err, output) {
+                    var deferred = q.defer();
+                    if (err != null) {
+                        this.logInfo("ERROR - " + JSON.stringify(err));
+                    }
+                    else {
+                        this.logInfo("Auto discovered Sonos host " + sonos.host + " with name " + output.roomName
+                            + " and friendly name " + output.friendlyName + ".");
+                        var sonosSpeaker = new Sonos();
+
+                        sonosSpeaker.configuration = {
+                            host: sonos.host,
+                            name: output.roomName,
+                            uuid: output.friendlyName
+                        }
+
+                        this.advertiseDevice(sonosSpeaker);
+                    }
+                    deferred.resolve();
+                    return deferred.promise;
+                }.bind(this));
+            }.bind(this));
         }
-*/
     };
 
     /**
