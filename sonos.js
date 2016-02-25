@@ -133,12 +133,14 @@ function SonosDiscovery() {
                         this.logInfo("Auto discovered Sonos host " + sonos.host + " with name " + output.roomName
                             + " and friendly name " + output.friendlyName + ".");
                         var sonosSpeaker = new Sonos();
+                        sonosSpeaker.id = output.roomName.replace(/\W/g, '');
+                        sonosSpeaker.label = output.roomName;
+                        sonosSpeaker.uuid = output.friendlyName;
 
                         sonosSpeaker.configuration = {
                             host: sonos.host,
                             name: output.roomName,
-                            uuid: output.friendlyName
-                        }
+                        };
 
                         this.advertiseDevice(sonosSpeaker);
                     }
