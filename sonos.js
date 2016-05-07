@@ -57,7 +57,7 @@ module.exports = {
             id: "pause",
             label: "Pause"
         }, {
-            id: "stop",
+            id: "stopPlayback",
             label: "Stop"
         }, {
             id: "mute",
@@ -90,6 +90,13 @@ module.exports = {
             type: {
                 id: "string"
             }
+        }, {
+            id: "updateInterval",
+            label: "Update Interval",
+            type: {
+                id: "integer"
+            },
+            defaultValue: 5000
         }]
     },
 
@@ -106,7 +113,15 @@ module.exports = {
 };
 
 var q = require('q');
+var xml2js = require('sonos/node_modules/xml2js');
 var SonosLibrary;
+var transportModes = {
+    stopped: "STOPPED",
+    playing: "PLAYING",
+    paused: "PAUSED_PLAYBACK",
+    transitioning: "TRANSITIONING",
+    noMediaPresent: "NO_MEDIA_PRESENT"
+};
 
 function SonosDiscovery() {
     /**
@@ -133,8 +148,8 @@ function SonosDiscovery() {
                         this.logInfo("Auto discovered Sonos host " + sonos.host + " with name " + output.roomName
                             + " and friendly name " + output.friendlyName + ".");
                         var sonosSpeaker = new Sonos();
-                        sonosSpeaker.id = output.roomName.replace(/\W/g, '');
-                        sonosSpeaker.label = output.roomName;
+                        sonosSpeaker.id = "sonos" + output.roomName.replace(/\W/g, '');
+                        sonosSpeaker.label = "Sonos " + output.roomName;
                         sonosSpeaker.uuid = output.friendlyName;
 
                         sonosSpeaker.configuration = {
@@ -157,7 +172,6 @@ function SonosDiscovery() {
      */
     SonosDiscovery.prototype.stop = function () {
         this.logDebug("Sonos discovery prototype stop called. Doing nothing.");
-        //@TODO unregister services
     };
 }
 
@@ -200,6 +214,11 @@ function Sonos() {
                     SonosLibrary = require("sonos");
                 }
 
+                this.configuration.updateInterval =
+                    ((this.configuration.updateInterval === undefined || 1000 > this.configuration.updateInterval)
+                        ? 1000
+                        : this.configuration.updateInterval);
+
                 this.scan();
                 deferred.resolve();
             } else {
@@ -212,16 +231,39 @@ function Sonos() {
         return deferred.promise;
     };
 
-    Sonos.prototype.stop = function (){
+    Sonos.prototype.stop = function () {
         this.started = false;
         this.logInfo("Stopping Sonos Device " + this.configuration.name + ".");
 
-        for (var interval in this.intervals){
+        for (var interval in this.intervals) {
             clearInterval(interval);
         }
 
-        for (var interval in this.simulationIntervals){
+        for (var interval in this.simulationIntervals) {
             clearInterval(interval);
+        }
+
+        this.logDebug("Un-registering for zone events.");
+
+        if (this.listener && this.sids && this.sids.length > 0) {
+            var sid;
+            for (var i in this.sids) {
+                sid = this.sids[i];
+                this.logDebug("Un-registering sid.", sid);
+
+                try {
+                    this.listener.removeService(sid, function (error, data) {
+                        if (error){
+                            this.logError("Error unregistering event.", error);
+                        } else {
+                            this.logDebug("Successfully unregistered.");
+                        }
+
+                    }.bind(this));
+                } catch (e) {
+                    this.logError("Error unregistering event.", e);
+                }
+            }
         }
     }
 
@@ -247,7 +289,7 @@ function Sonos() {
                             + output.friendlyName);
                         this.sonos = sonos;
                         this.description = output;
-                        this.connect();
+                        this.registerEvents();
                     }
                     else {
                         this.logDebug("Ignoring host " + sonos.host + " with room name " + output.roomName
@@ -266,49 +308,14 @@ function Sonos() {
     /**
      *
      */
-    Sonos.prototype.readStatus = function () {
-        var deferred = q.defer();
-        this.sonos.getCurrentState(function (err, state) {
-            this.state.currentState = state;
-            this.logDebug("Current State: " + this.state.currentState);
-        }.bind(this));
-
-        this.sonos.getMuted(function (err, muted) {
-            this.state.muted = muted;
-            this.logDebug("Muted: " + this.state.muted);
-        }.bind(this))
-
-        this.sonos.currentTrack(function (err, track) {
-            if (track) {
-                this.state.currentTrack = track.title,
-                    this.state.artist = track.artist,
-                    this.state.album = track.album,
-                    this.state.albumArtURI = track.albumArtURI
-                this.logDebug("Current State: ", this.state);
-            }
-        }.bind(this));
-
-        this.sonos.getVolume(function (err, volume) {
-            this.state.volume = volume;
-            this.logDebug("Current Volume: " + this.state.volume);
-        }.bind(this));
-
-        this.logDebug("Current Track: ", this.state.currentTrack, " Volume: ", this.state.volume, " State: ", this.state.currentState);
-        this.publishStateChange();
-        deferred.resolve();
-        return deferred.promise;
-    }
-
-    /**
-     *
-     */
     Sonos.prototype.registerEvents = function () {
         this.logDebug("Registering for zone events.");
         var Listener = require('sonos/lib/events/listener');
-        var listener = new Listener(this.sonos);
+        this.listener = new Listener(this.sonos);
+        this.sids = [];
         this.logDebug("Initiated the listener.");
 
-        listener.listen(function (err) {
+        this.listener.listen(function (err) {
             if (err) throw err;
 
             /**
@@ -328,64 +335,96 @@ function Sonos() {
              */
 
                 // Register for play, pause, etc.
-            listener.addService('/MediaRenderer/AVTransport/Event', function (error, sid) {
+            this.listener.addService('/MediaRenderer/AVTransport/Event', function (error, sid) {
                 if (error) {
                     this.logError("Error subscribing to event: " + JSON.stringify(error));
                 }
                 else {
                     this.logDebug('Successfully subscribed, with subscription id', sid);
+                    this.sids.push(sid);
                 }
             }.bind(this));
+
 
             // register for playback rendering, eg bass, treble, volume and EQ.
-            listener.addService('/MediaRenderer/RenderingControl/Event', function (error, sid) {
+            this.listener.addService('/MediaRenderer/RenderingControl/Event', function (error, sid) {
                 if (error) {
                     this.logError("Error: " + JSON.stringify(error));
-                    throw error;
+                } else {
+                    this.logDebug('Successfully subscribed, with subscription id', sid);
+                    this.sids.push(sid);
                 }
-                this.logDebug('Successfully subscribed, with subscription id', sid);
             }.bind(this));
 
-            listener.on('serviceEvent', function (endpoint, sid, data) {
+            this.listener.on('serviceEvent', function (endpoint, sid, data) {
                 this.logDebug('Received event from', endpoint, '(' + sid + ').');
 
-                this.readStatus();
-                /* The following code only works for AVTransport events
-                 xml2js = require('sonos/node_modules/xml2js');
+                xml2js.parseString(data.LastChange, function (err, event) {
+                    try {
+                        if ("/MediaRenderer/AVTransport/Event" == endpoint) {
+                            try {
+                                this.state.currentState = event.Event.InstanceID[0].TransportState[0].$.val;
+                                this.logInfo("Notified about current play mode.", this.state.currentState);
+                                this.publishStateChange();
+                            } catch (e) {
+                                this.logDebug("No transport state.", endpoint);
+                            }
 
-                 xml2js.parseString(data.LastChange, function (err, avTransportEvent) {
+                            var currentTrackMetaDataXML;
+                            try {
+                                currentTrackMetaDataXML = event.Event.InstanceID[0].CurrentTrackMetaData[0].$.val;
+                            } catch (e) {
+                                this.logDebug("No track meta data.", endpoint);
+                            }
 
-                 try {
-                 var currentTrackMetaDataXML = avTransportEvent.Event.InstanceID[0].CurrentTrackMetaData[0].$.val;
-                 } catch (e) {
-                 this.logError("Could not handle event from", endpoint, '(' + sid + ').');
-                 }
+                            if (currentTrackMetaDataXML) {
+                                xml2js.parseString(currentTrackMetaDataXML, function (err, trackMetaData) {
+                                    if (!err) {
+                                        try {
+                                            this.state.currentTrack = trackMetaData["DIDL-Lite"].item[0]["dc:title"][0];
+                                            this.state.artist = trackMetaData["DIDL-Lite"].item[0]["dc:creator"][0];
+                                            this.state.album = trackMetaData["DIDL-Lite"].item[0]["upnp:album"][0];
+                                            this.state.albumArtURI = trackMetaData["DIDL-Lite"].item[0]["upnp:albumArtURI"][0];
+                                        } catch (e) {
+                                            this.logError("Error reading track meta data.", e);
+                                        }
 
-                 xml2js.parseString(currentTrackMetaDataXML, function (err, trackMetaData) {
-                 if(!err){
-                 this.logInfo("Notified about current track: " + trackMetaData["DIDL-Lite"].item[0]["dc:title"][0]);
-                 this.state.currentTrack = trackMetaData["DIDL-Lite"].item[0]["dc:title"][0];
-                 this.publishStateChange();
-                 }
-                 else {
-                 this.logError("Error parsing event from", endpoint, '(' + sid + ').');
-                 }
-                 }.bind(this));
-                 }.bind(this));
-                 */
+                                        this.logInfo("Notified about current track.", this.state.currentTrack,
+                                            this.state.artist, this.state.album);
+                                        this.logDebug("Album Art URI", this.state.albumArtURI);
+                                        this.publishStateChange();
+                                    }
+                                    else {
+                                        this.logError("Error parsing event from", endpoint, '(' + sid + ').', e);
+                                    }
+                                }.bind(this));
+                            }
+                        } else if ("/MediaRenderer/RenderingControl/Event" == endpoint) {
+                            try {
+                                this.state.muted = (event.Event.InstanceID[0].Mute[0].$.val == 1) ? true : false;
+                                this.logInfo("Muted", this.state.muted);
+                            } catch (e) {
+                                this.logDebug("No mute state.", endpoint);
+                            }
+
+                            try {
+                                this.state.volume = parseInt(event.Event.InstanceID[0].Volume[0].$.val);
+                                this.logInfo("Volume", this.state.volume);
+                            } catch (e) {
+                                this.logDebug("No volume state.", endpoint);
+                            }
+
+                            this.publishStateChange();
+                        }
+                    } catch (e) {
+                        this.logError("Could not handle event from", endpoint, '(' + sid + ').');
+                        this.logError(e);
+                    }
+                }.bind(this));
             }.bind(this));
         }.bind(this));
 
         this.logDebug("Done registering events.");
-        this.intervals.push(setInterval(Sonos.prototype.readStatus.bind(this), 1000));
-    }
-
-    /**
-     *
-     */
-    Sonos.prototype.connect = function () {
-        this.readStatus();
-        this.registerEvents();
     }
 
     /**
@@ -417,7 +456,7 @@ function Sonos() {
             }.bind(this));
         }
         else {
-            this.state.currentState = "playing";
+            this.state.currentState = transportModes.playing;
         }
 
         this.publishStateChange();
@@ -428,15 +467,13 @@ function Sonos() {
      *
      */
     Sonos.prototype.pause = function () {
-        this.logDebug("Sonos pause called");//@TODO remove
-
         if (!this.isSimulated()) {
             this.sonos.pause(function (err, data) {
                 // no need to do anything, really.
             }.bind(this));
         }
         else {
-            this.state.currentState = "paused";
+            this.state.currentState = transportModes.paused;
         }
 
         this.publishStateChange();
@@ -446,16 +483,14 @@ function Sonos() {
      *
      *
      */
-    Sonos.prototype.stop = function () {
-        this.logDebug("Sonos stop called");
-
+    Sonos.prototype.stopPlayback = function () {
         if (!this.isSimulated()) {
             this.sonos.stop(function (err, data) {
                 // no need to do anything, really.
             }.bind(this));
         }
         else {
-            this.state.currentState = "stopped";
+            this.state.currentState = transportModes.stopped;
         }
 
         this.publishStateChange();
@@ -466,8 +501,6 @@ function Sonos() {
      *
      */
     Sonos.prototype.next = function () {
-        this.logDebug("Sonos next called");//@TODO remove
-
         if (!this.isSimulated()) {
             this.sonos.next(function (err, data) {
                 // no need to do anything, really.
@@ -487,8 +520,6 @@ function Sonos() {
      *
      */
     Sonos.prototype.previous = function () {
-        this.logDebug("Sonos previous called");//@TODO remove
-
         if (!this.isSimulated()) {
             this.sonos.previous(function (err, data) {
                 // no need to do anything
@@ -496,7 +527,7 @@ function Sonos() {
 
             this.publishStateChange();
         }
-        else{
+        else {
             this.simulatePreviousSong()
         }
 
@@ -517,7 +548,7 @@ function Sonos() {
                 });
             }.bind(this))
         }
-        else{
+        else {
             this.state.muted = !this.state.muted;
         }
 
@@ -528,7 +559,7 @@ function Sonos() {
      *
      *
      */
-    Sonos.prototype.isPlaying = function(){
+    Sonos.prototype.isPlaying = function () {
         return ((this.state.currentState == "playing") || (this.state.currentState == "transitioning"));
     }
 
@@ -536,23 +567,23 @@ function Sonos() {
      *
      *
      */
-    Sonos.prototype.isPaused = function(){
-        return (this.state.currentState == "paused");
+    Sonos.prototype.isPaused = function () {
+        return (this.state.currentState == transportModes.paused);
     }
 
     /**
      *
      *
      */
-    Sonos.prototype.isStopped = function(){
-        return (this.state.currentState == "stopped");
+    Sonos.prototype.isStopped = function () {
+        return (this.state.currentState == transportModes.stopped);
     }
 
     /**
      *
      *
      */
-    Sonos.prototype.isMuted = function(){
+    Sonos.prototype.isMuted = function () {
         return this.state.muted;
     }
 
@@ -565,7 +596,7 @@ function Sonos() {
         this.setVolume(parameters.level);
     };
 
-    Sonos.prototype.setVolume = function(volume){
+    Sonos.prototype.setVolume = function (volume) {
         this.logDebug("Sonos setVolume called");
         this.state.volume = volume;
 
@@ -582,7 +613,7 @@ function Sonos() {
      *
      *
      */
-    Sonos.prototype.initiateSimulation = function(){
+    Sonos.prototype.initiateSimulation = function () {
         this.state = {
             currentTrack: null,
             currentState: "playing",
@@ -617,7 +648,7 @@ function Sonos() {
 
         // Simulating song changes every 15 seconds, but only if playing
         this.simulationIntervals.push(setInterval(function () {
-            if (this.isPlaying()){
+            if (this.isPlaying()) {
                 this.simulateNextSong();
             }
         }.bind(this), 15000));
@@ -627,7 +658,7 @@ function Sonos() {
      *
      *
      */
-    Sonos.prototype.simulatePreviousSong = function() {
+    Sonos.prototype.simulatePreviousSong = function () {
         this.logDebug("Simulating previous song.");
 
         if (this.simulationData.songNr == 0) {
@@ -644,7 +675,7 @@ function Sonos() {
      *
      *
      */
-    Sonos.prototype.simulateNextSong = function() {
+    Sonos.prototype.simulateNextSong = function () {
         this.logDebug("Simulating next song.");
 
         if (this.simulationData.songNr < (this.simulationData.songs.length - 1)) {
@@ -661,7 +692,7 @@ function Sonos() {
      *
      *
      */
-    Sonos.prototype.simulateSong = function(index){
+    Sonos.prototype.simulateSong = function (index) {
         this.logDebug("Simulating song change to ", this.simulationData.songs[index]);
         this.state.currentTrack = this.simulationData.songs[index].currentTrack;
         this.state.artist = this.simulationData.songs[index].artist;
