@@ -34,3 +34,22 @@ Installation:
 The UI display's the connected Sonos' state and allows to control it.
 
 <img src="./documentation/images/sonos-mobile-screenshot.png">
+
+## Mobile UI
+
+<p align="center"><a href="./documentation/images/thing-it-mobile-sonos-yamaha-.png"><img src="./documentation/images/thing-it-mobile-sonos-yamaha-.png" width="70%" height="70%"></a></p>
+
+## Where to go from here ...
+
+After completing the above, you may be interested in
+
+* Configuring additional [Devices](https://www.thing-it.com/thing-it/#/documentationPanel/mobileClient/deviceConfiguration), 
+[Groups](https://www.thing-it.com/thing-it/#/documentationPanel/mobileClient/groupConfiguration), 
+[Services](https://www.thing-it.com/thing-it/#/documentationPanel/mobileClient/serviceConfiguration), 
+[Event Processing](https://www.thing-it.com/thing-it/#/documentationPanel/mobileClient/eventConfiguration), 
+[Storyboards](https://www.thing-it.com/thing-it/#/documentationPanel/mobileClient/storyboardConfiguration) and 
+[Jobs](https://www.thing-it.com/thing-it/#/documentationPanel/mobileClient/jobConfiguration) via your **[thing-it] Mobile App**.
+* Use [thing-it.com](https://www.thing-it.com) to safely connect your Node Box from everywhere, manage complex configurations, store and analyze historical data 
+and offer your configurations to others on the **[thing-it] Mesh Market**.
+* Explore other Device Plugins like [Texas Instruments Sensor Tag](https://www.npmjs.com/package/thing-it-device-ti-sensortag), [Plugwise Smart Switches](https://www.npmjs.com/package/thing-it-device-plugwise) and many more. For a full set of 
+Device Plugins search for **thing-it-device** on [npm](https://www.npmjs.com/). Or [write your own Plugins](https://github.com/marcgille/thing-it-node/wiki/Plugin-Development-Concepts).
