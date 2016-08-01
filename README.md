@@ -29,13 +29,9 @@ Installation:
 * Configure the Sonos device by providing the name of the Sonos player you want to control (e.g. Kitchen)
 
 
-## User Interface
-
-The UI display's the connected Sonos' state and allows to control it.
-
-<img src="./documentation/images/sonos-mobile-screenshot.png">
-
 ## Mobile UI
+
+The UI displays the connected Sonos' state and allows to control it.
 
 <p align="center"><a href="./documentation/images/thing-it-mobile-sonos-yamaha-.png"><img src="./documentation/images/thing-it-mobile-sonos-yamaha-.png" width="70%" height="70%"></a></p>
 
