@@ -1,2 +1,3 @@
 # ignore all files in .idea directories, wherevery they are
 .idea/
+/node_modules
