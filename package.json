@@ -1,9 +1,12 @@
 {
-  "name": "thing-it-device-sonos",
+  "name": "@thing-it/device-sonos",
   "version": "0.2.12",
   "description": "[thing-it-node] Device Plugin for Sonos players.",
   "authors": "Klaus Berberich, Marc Gille",
   "license": "MIT",
+  "scripts": {
+    "postversion": "git push && git push --tags && npm publish"
+  },
   "keywords": [
     "IoT",
     "thing-it",
@@ -14,7 +17,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/klausberberich/thing-it-device-sonos"
+    "url": "https://github.com/thing-it/thing-it-device-sonos"
   },
   "dependencies": {
     "q": "~1.4.1",
