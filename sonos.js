@@ -185,6 +185,12 @@ function Sonos() {
     Sonos.prototype.start = function () {
         var deferred = q.defer();
 
+        this.operationalState = {
+            status: 'PENDING',
+            message: 'Waiting for initialization...'
+        };
+        this.publishOperationalStateChange();
+
         this.state = {
             currentTrack: null,
             currentState: null,
@@ -203,6 +209,13 @@ function Sonos() {
         if (this.sonos) {
             this.logInfo("Unexpected Condition: Sonos already exists in prototype start.");//@TODO remove
             this.connect();
+
+            this.operationalState = {
+                status: 'OK',
+                message: 'Sonos successfully initialized'
+            }
+            this.publishOperationalStateChange();
+
             deferred.resolve();
         }
         else {
@@ -220,9 +233,23 @@ function Sonos() {
                         : this.configuration.updateInterval);
 
                 this.scan();
+                                    
+                this.operationalState = {
+                    status: 'OK',
+                    message: 'Sonos successfully initialized'
+                }
+                this.publishOperationalStateChange();
+                
                 deferred.resolve();
             } else {
                 this.logInfo("Starting up simulated Sonos.");
+                                    
+                this.operationalState = {
+                    status: 'OK',
+                    message: 'Sonos successfully initialized'
+                }
+                this.publishOperationalStateChange();
+
                 deferred.resolve();
                 this.initiateSimulation();
             }
